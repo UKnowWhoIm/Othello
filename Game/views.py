@@ -33,6 +33,8 @@ def ai_move(request):
 def index_view(request):
     if request.session.get('board', None) is None:
         request.session['board'] = engine.Board()
+        request.session['player'] = WHITE
+        request.session['game_over'] = False
     return render(request, "reversi/game.html")
 
 

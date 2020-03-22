@@ -5,10 +5,9 @@ register = template.Library()
 
 @register.filter
 def convert_board(dic_board):
-    list_board = []
-    for i in range(8):
-        for j in range(8):
-            list_board[i][j] = dic_board.get((i, j), None)
+    list_board = [[None for i in range(8)] for j in range(8)]
+    for pos, player in dic_board.items():
+        list_board[pos[0]][pos[1]] = player
     return list_board
 
 

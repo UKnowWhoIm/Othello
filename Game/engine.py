@@ -31,7 +31,7 @@ class Board:
             while 0 <= temp_x <= 7 and 0 <= temp_y <= 7:
                 if temp_board.get((temp_x, temp_y), None) == reverse_player(player):
                     piece_flipped = True
-                    temp_board[(temp_x, temp_y)] = reverse_player(player)
+                    temp_board[(temp_x, temp_y)] = player
                     temp_x += dirn[0]
                     temp_y += dirn[1]
                 elif temp_board.get((temp_x, temp_y), None) == player:
@@ -51,6 +51,8 @@ class Board:
         return move_is_valid
 
     def calc_score(self):
+        self.white_score = 0
+        self.black_score = 0
         for pos, player in self.board.items():
             if player == WHITE:
                 self.white_score += 1
