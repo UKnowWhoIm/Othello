@@ -1,0 +1,4 @@
+WHITE = 'white'
+BLACK = 'black'
+SUCCESS_CODE = 200
+FAILURE_CODE = 300
