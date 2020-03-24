@@ -65,34 +65,34 @@
         <script>
             FALIURE_CODE = 300;
             SUCCESS_CODE = 200;
-            /*
-            $(".Blank").click(function () {
-                var coods = $(this).attr('id').split(',');
-                $.post("{%url 'Move'%}", { "targetX": coods[0], "targetY": coods[1] }, function (result) {
-                    if (result == FALIURE_CODE)
-                        alert("Invalid Move");
-                    else
-                        location.reload();
-                })
-            });
-            
-           
-                $(".pass").click(function () {
-                    var Id = (this).id;
-                    $.post("{%url 'Move'%}",{"targetX":'-1',"targetY":'-1'},function(result){
-                        if (result == FALIURE_CODE)
-                            alert("Invalid Move");
-                    })
-                });
-            */
-
-            $(document).ready(function(){
-                $.post("{%url 'ai_move'%}",function(data){
-                    location.reload();
-                })
-            });
-    
-            
+            {%if not request.session.game_over%}
+                {%ifequal request.session.player 'white'%}
+                    $(".Blank").click(function () {
+                        var coods = $(this).attr('id').split(',');
+                        $.post("{%url 'Move'%}", { "targetX": coods[0], "targetY": coods[1] }, function (result) {
+                            if (result == FALIURE_CODE)
+                                alert("Invalid Move");
+                            else
+                                location.reload();
+                        })
+                    });
+                    
+                
+                        $(".pass").click(function () {
+                            var Id = (this).id;
+                            $.post("{%url 'Move'%}",{"targetX":'-1',"targetY":'-1'},function(result){
+                                if (result == FALIURE_CODE)
+                                    alert("Invalid Move");
+                            })
+                        });
+                {%else%}
+                    $(document).ready(function(){
+                        $.post("{%url 'ai_move'%}",function(data){
+                            location.reload();
+                        })
+                    });
+                {%endifequal%}
+            {%endif%}
 
         </script>
     </body>

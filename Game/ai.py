@@ -75,7 +75,7 @@ def minimax(board, player, depth, is_max):
 
 
 def interface(board, player, depth=4):
-    max_val = -100
+    max_val = -10000
     coods = (-1, -1)
 
     for i in range(8):
@@ -83,6 +83,7 @@ def interface(board, player, depth=4):
             temp = deepcopy(board)
             if temp.is_valid(i, j, player):
                 val = minimax(temp, engine.reverse_player(player), depth - 1, False)
+                print(val)
                 if val > max_val:
                     max_val = val
                     coods = (i, j)

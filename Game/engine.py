@@ -29,17 +29,25 @@ class Board:
             piece_flipped = False
             encountered_self = False
             temp_x, temp_y = x + dirn[0], y + dirn[1]
+            if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
+                print((temp_x, temp_y))
             while 0 <= temp_x <= 7 and 0 <= temp_y <= 7:
                 if temp_board.get((temp_x, temp_y), None) == reverse_player(player):
                     piece_flipped = True
                     temp_board[(temp_x, temp_y)] = player
                     temp_x += dirn[0]
                     temp_y += dirn[1]
+                    if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
+                        print((temp_x, temp_y))
                 elif temp_board.get((temp_x, temp_y), None) == player:
                     encountered_self = True
+                    if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
+                        print((temp_x, temp_y))
                     break
                 else:
                     break
+            if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
+                print(piece_flipped, encountered_self)
             if piece_flipped and encountered_self:
                 # Move is valid as at least one piece is flipped
                 move_is_valid = True
@@ -67,8 +75,10 @@ class Board:
         for pos, player_ in self.board.items():
             if player == reverse_player(player_):
                 for dirn in dirns:
-                    if self.is_valid(pos[0] + dirn[0], pos[1] + dirn[1], player, True):
-                        moves.append((pos[0] + dirn[0], pos[1] + dirn[1]))
+                    tempx, tempy = pos[0] + dirn[0], pos[1] + dirn[1]
+                    if 0 <= tempx <= 7 and 0 <= tempy <= 7:
+                        if self.is_valid(pos[0] + dirn[0], pos[1] + dirn[1], player, True):
+                            moves.append((pos[0] + dirn[0], pos[1] + dirn[1]))
         return moves
 
     def check_pass(self, player):
@@ -93,9 +103,12 @@ class Board:
                     print('.', end=' ')
             print()
 
+
 def reverse_player(player):
     if player == WHITE:
         return BLACK
     return WHITE
 
 
+if __name__ == '__main__':
+    pass
