@@ -25,8 +25,19 @@ def process_move(request):
 
 
 def ai_move(request):
-    request.session['board'] = ai.interface(request.session['board'], BLACK, 4)
-    request.session['player'] = WHITE
+    move = ai.interface(request.session['board'], request.session['player'], 3)
+    request.session['board'].is_valid(move[0], move[1], request.session['player'])
+    if move == [-1, -1]:
+        if request.session['board'].has_game_ended():
+            request.session['game_over'] = True
+            if request.session['board'].white_score > request.session['board'].black_score:
+                request.session['player'] = WHITE
+            elif request.session['board'].white_score < request.session['board'].black_score:
+                request.session['player'] = BLACK
+            else:
+                request.session['player'] = None
+            return HttpResponse(SUCCESS_CODE)
+    request.session['player'] = engine.reverse_player(request.session['player'])
     return HttpResponse(SUCCESS_CODE)
 
 

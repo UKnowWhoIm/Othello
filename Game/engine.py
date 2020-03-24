@@ -1,6 +1,7 @@
 from copy import deepcopy
 from .constants import WHITE, BLACK
-dirns = [[-1, -1], [-1, 1], [-1, 0], [0, -1], [0, 0], [0, 1], [1, -1], [1, 0], [1, 1]]
+#from constants import WHITE, BLACK
+dirns = [[-1, -1], [-1, 1], [-1, 0], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
 
 
 class Board:
@@ -13,7 +14,6 @@ class Board:
             self.board = {(3, 3): WHITE, (3, 4): BLACK, (4, 4): WHITE, (4, 3): BLACK}
             self.white_score = 2
             self.black_score = 2
-        self.nega_score = 0
 
     def is_valid(self, x, y, player, sim=False):
         if (x, y) == (-1, -1):
@@ -21,10 +21,11 @@ class Board:
         if self.board.get((x, y), None):
             # Target col is occupied
             return False
-
         move_is_valid = False
+        t_board = self.board
         for dirn in dirns:
-            temp_board = Board(self.board, self.white_score, self.black_score).board
+
+            temp_board = Board(t_board, self.white_score, self.black_score).board
             piece_flipped = False
             encountered_self = False
             temp_x, temp_y = x + dirn[0], y + dirn[1]
@@ -42,8 +43,10 @@ class Board:
             if piece_flipped and encountered_self:
                 # Move is valid as at least one piece is flipped
                 move_is_valid = True
-                self.board = deepcopy(temp_board)
+                # as this board is valid, use this one's copy as the base for next temp_board
+                t_board = deepcopy(temp_board)
         if move_is_valid and not sim:
+            self.board = deepcopy(t_board)
             self.board[(x, y)] = player
             self.calc_score()
         elif sim:
@@ -76,8 +79,19 @@ class Board:
         return self.check_pass(WHITE) and self.check_pass(BLACK)
 
     def ai_calc_score(self):
-        self.nega_score = self.black_score - self.white_score
+        return self.black_score - self.white_score
 
+    def print_board(self):
+        for i in range(8):
+            for j in range(8):
+                if self.board.get((i, j), None):
+                    if self.board[(i, j)] == WHITE:
+                        print('w', end=' ')
+                    else:
+                        print('b', end=' ')
+                else:
+                    print('.', end=' ')
+            print()
 
 def reverse_player(player):
     if player == WHITE:
