@@ -26,7 +26,6 @@ def process_move(request):
 
 def ai_move(request):
     move = ai.interface(request.session['board'], request.session['player'], 3)
-    print(move, "eriuh")
     request.session['board'].is_valid(move[0], move[1], request.session['player'])
     if move == (-1, -1):
         if request.session['board'].has_game_ended():

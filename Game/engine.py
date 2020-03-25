@@ -1,6 +1,7 @@
 from copy import deepcopy
 from .constants import WHITE, BLACK
-#from constants import WHITE, BLACK
+
+# from constants import WHITE, BLACK
 dirns = [[-1, -1], [-1, 1], [-1, 0], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
 
 
@@ -24,30 +25,24 @@ class Board:
         move_is_valid = False
         t_board = self.board
         for dirn in dirns:
-
             temp_board = Board(t_board, self.white_score, self.black_score).board
             piece_flipped = False
             encountered_self = False
             temp_x, temp_y = x + dirn[0], y + dirn[1]
-            if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
-                print((temp_x, temp_y))
+
             while 0 <= temp_x <= 7 and 0 <= temp_y <= 7:
                 if temp_board.get((temp_x, temp_y), None) == reverse_player(player):
                     piece_flipped = True
                     temp_board[(temp_x, temp_y)] = player
                     temp_x += dirn[0]
                     temp_y += dirn[1]
-                    if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
-                        print((temp_x, temp_y))
+
                 elif temp_board.get((temp_x, temp_y), None) == player:
                     encountered_self = True
-                    if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
-                        print((temp_x, temp_y))
                     break
                 else:
                     break
-            if (x, y) == (6, 0) and player == WHITE and dirn == [0, 1]:
-                print(piece_flipped, encountered_self)
+
             if piece_flipped and encountered_self:
                 # Move is valid as at least one piece is flipped
                 move_is_valid = True
