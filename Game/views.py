@@ -59,15 +59,20 @@ def new_game(request):
         request.session['ai_color'] = BLACK
     elif int(request.GET['mode']) == 2:
         # Custom Match
-        request.session['depth'] = int(request.GET['depth'])
-        print(request.GET['color'], engine.reverse_player(request.GET['color']))
+        if 1 < int(request.GET['depth']) <= 4:
+            request.session['depth'] = int(request.GET['depth'])
+        else:
+            request.session['depth'] = 3
         request.session['ai_color'] = engine.reverse_player(request.GET['color'])
     elif int(request.GET['mode']) == 3:
         # Multi player
         request.session['ai_disabled'] = True
     else:
         # AI v AI
-        request.session['depth'] = int(request.GET['depth'])
+        if 1 < int(request.GET['depth']) <= 4:
+            request.session['depth'] = int(request.GET['depth'])
+        else:
+            request.session['depth'] = 3
         request.session['player_disabled'] = True
     return HttpResponseRedirect('/reversi')
 

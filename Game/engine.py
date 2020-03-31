@@ -100,9 +100,9 @@ class Board:
 
 
 def reverse_player(player):
-    if player == WHITE:
-        return BLACK
-    return WHITE
+    if player == BLACK:
+        return WHITE
+    return BLACK
 
 
 if __name__ == '__main__':
