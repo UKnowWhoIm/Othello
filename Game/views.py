@@ -25,7 +25,7 @@ def process_move(request):
 
 
 def ai_move(request):
-    move = ai.interface(request.session['board'], request.session['player'], 3)
+    move = ai.interface(request.session['board'], request.session['player'], request.session['depth'])
     request.session['board'].is_valid(move[0], move[1], request.session['player'])
     if move == (-1, -1):
         if request.session['board'].has_game_ended():
@@ -51,4 +51,26 @@ def index_view(request):
 
 def new_game(request):
     request.session.flush()
+    request.session['ai_disabled'] = False
+    request.session['player_disabled'] = False
+    if int(request.GET['mode']) == 1:
+        # Quick Match
+        request.session['depth'] = 3
+        request.session['ai_color'] = BLACK
+    elif int(request.GET['mode']) == 2:
+        # Custom Match
+        request.session['depth'] = int(request.GET['depth'])
+        print(request.GET['color'], engine.reverse_player(request.GET['color']))
+        request.session['ai_color'] = engine.reverse_player(request.GET['color'])
+    elif int(request.GET['mode']) == 3:
+        # Multi player
+        request.session['ai_disabled'] = True
+    else:
+        # AI v AI
+        request.session['depth'] = int(request.GET['depth'])
+        request.session['player_disabled'] = True
     return HttpResponseRedirect('/reversi')
+
+
+def landing(request):
+    return render(request, "reversi/landing.html")

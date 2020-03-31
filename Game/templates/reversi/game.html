@@ -2,10 +2,11 @@
 
 <html lang="en">
     <head>
+        {%load static%}
         <meta charset="utf-8" />
         <title>Reversi</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        {%load static%}
+        <link rel="stylesheet" href="{%static 'style.css'%}"/>
         <style>
          #white{
             position: absolute;
@@ -31,6 +32,31 @@
                 padding: 10px 10px 10px 10px;
                 
             }
+            button{
+                border: none;
+                cursor: pointer;
+            }
+            .pass{
+                padding: 8px 8px;
+                background-color: burlywood
+            }
+            #new_game{
+                text-align: center;  
+            }
+            #new_game button{
+                margin-top: 10px;
+                font-size: 18px;
+                padding: 10px 10px;
+                background-color: #4CAF50;
+                color: white;
+            }
+            button:hover{
+                background-color: #ccc!important;
+                color: black!important;
+            }
+            body{
+                overflow-x: hidden;
+            }
         </style>
     </head>
     <body>
@@ -38,12 +64,16 @@
         <div id="white">
             <h2>White</h2>    
             {{request.session.board.white_score}}<br/>
-            <button class="pass" id="1">Pass</button>
+            {%if request.session.ai_disabled and request.session.player == 'white' or request.session.player == 'white' and request.session.ai_color == 'black'%}
+                <button class="pass" id="1">Pass</button>
+            {%endif%}
         </div>
         <div id="black">
             <h2>Black</h2>    
             {{request.session.board.black_score}}<br/>
-            <button id="2" class="pass">Pass</button>
+            {%if request.session.ai_disabled and request.session.player == 'black' or request.session.player == 'black' and request.session.ai_color == 'white'%}
+                <button id="2" class="pass">Pass</button>
+            {%endif%}
         </div>
         <h1>
             {{request.session.game_over|process_game_data:request.session.player}}
@@ -61,12 +91,14 @@
                 </tr>
            {%endfor%}
         </table>
-        <button onclick="window.location='{%url 'new_game'%}'">Start New Game</button>
+        <div id="new_game">
+            <button onclick="window.location='/'">Start New Game</button>
+        </div>
         <script>
             FALIURE_CODE = 300;
             SUCCESS_CODE = 200;
             {%if not request.session.game_over%}
-                {%ifequal request.session.player 'white'%}
+                {%if request.session.player != request.session.ai_color and not request.session.player_disabled%}
                     $(".Blank").click(function () {
                         var coods = $(this).attr('id').split(',');
                         $.post("{%url 'Move'%}", { "targetX": coods[0], "targetY": coods[1] }, function (result) {
@@ -91,9 +123,14 @@
                             location.reload();
                         })
                     });
-                {%endifequal%}
+                {%endif%}
             {%endif%}
-
         </script>
+        <footer>
+            <div id="footer-content">
+                Created By Sidharth Ajithkumar&nbsp;
+                <img src="{%static 'github.png'%}" onclick="window.open('https://github.com/UKnowWhoIm/Othello','_blank')" alt="github'"/>
+            </div>
+        </footer>
     </body>
 </html>

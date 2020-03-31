@@ -25,12 +25,13 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
                     if val > max_val:
                         max_val = val
                     alpha = max(max_val, alpha)
-                    if alpha <= beta:
+                    if beta <= alpha:
+                        print('prune')
                         break_loop = True
                         break
             if break_loop:
                 break
-        return max_val
+        return alpha
 
     else:
         min_val = 1000
@@ -43,11 +44,12 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
                         min_val = val
                     beta = min(beta, min_val)
                     if beta <= alpha:
+                        print('prune')
                         break_loop = True
                         break
             if break_loop:
                 break
-        return min_val
+        return beta
 
 
 def interface(board, player, depth=4):

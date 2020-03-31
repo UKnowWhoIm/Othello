@@ -1,0 +1,180 @@
+<!Doctype html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        {%load static%}
+        <link rel="stylesheet" href="{%static 'style.css'%}"/>
+        <style>
+            html, body{
+                height: 100%;
+                margin: 0;
+                overflow: hidden;
+            }
+            body::after{
+                z-index: -1;
+                height: 100%;
+                width: 100%;
+                content: "";
+                background-image: url("{%static 'landing.jpg'%}");
+                opacity: 0.5;
+                position: absolute;
+                top: 0;
+                left: 0; 
+            }
+            h1{
+                font-family:'Courier New', Courier, monospace;
+                font-size: 80px;
+                text-align: center;
+                padding: 20px 20px;
+            }
+            #options{
+                color:brown;
+
+                padding: 10px 10px;
+                
+                text-align: center;
+            }
+            .option{
+                color: black;
+                cursor: pointer;
+                padding: 10px 10px;
+                display: inline-block;
+            }
+            .option:hover{
+                background-color:rgba(58, 103, 155, 0.342);
+                color: black;
+                border: 2px solid rgb(58,103,155);
+                
+            }
+            #options a, #options a:visited{
+                text-decoration: none!important;
+                color: inherit;
+            }   
+            #div2, #div3{
+                display: none;
+            }
+            body{
+                text-align: center;
+                
+                font-size: 32px;
+            }
+            #color, #difficulty{
+                padding: 10px 10px;
+                font-family:Verdana, Geneva, Tahoma, sans-serif ;
+                font-size: 28px;
+            }
+            h4{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 5px 5px;
+                font-size: 40px;
+            }
+            input[type=radio]{
+                height: 25px;
+                width: 25px;
+            }
+            button{
+                font-size: 28px;
+                padding: 8px 16px;
+                background-color: chartreuse;
+                border: none;
+                cursor: pointer;
+            }   
+            button:hover{
+                background-color: grey;
+            }
+            #warning{
+                padding: 10px 10px;
+                display: none;
+                background-color: yellow;
+            }
+            input[type=number]{
+                padding: 10px 10px;
+                font-size: 20px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div id="div1">
+                <h1>Othello</h1>
+            
+            <div id="options">
+                
+                <a href="{%url 'new_game'%}?mode=1"><span class="option">Quick Match(Single Player)</span></a><br/><br/>
+                <span onclick="showdiv('div2')" class="option">Custom Match(Single Player)</span></a><br/><br/>
+                <a href="{%url 'new_game'%}?mode=3"><span class="option">Multiplayer</span></a><br/><br/>
+                <span onclick="showdiv('div3')" class="option">AI vs AI</span><br/><br/>
+                
+            </div>
+        </div>
+        <div id="div2">
+            <h1>Custom Match</h1>
+                <div id="color">
+                    <h4>Choose Color</h4>
+                    <input type="radio" value="white" name="color"/>White
+                    <input type="radio" value="black" name="color"/>Black<br/>
+                </div>
+                
+                <div id='difficulty'>
+                    <h4>Choose Difficulty</h4>
+                    <input type="radio" value="2" name="difficulty"/>Easy
+                    <input type="radio" value="3" name="difficulty"/>Medium
+                    <input type="radio" value="4" name="difficulty"/>Hard<br/>
+                </div><br/>
+                <button type="button" id="custom_button">Play</button>
+            </div>
+        </div>
+        <div id="div3">
+            <h1>AI vs AI</h1>
+            <h4>Choose Depth Of Minimax</h4>
+            <label id="warning">WARNING: Using depth higher than or equal to 4 may lead to long wait times between moves</label><br/>
+
+            <input type="number" placeholder="Enter Depth" onkeyup="trigger_warning(this.value)" name="depth"/>
+            <button type="button" id="ai_button">Play</button>
+        </div>
+        <footer>
+            <div id="footer-content">
+                Created By Sidharth Ajithkumar 
+                <img src="{%static 'github.png'%}" onclick="window.open('https://github.com/UKnowWhoIm/Othello','_blank')" alt="github"/>
+            </div>
+        </footer>
+    </body>
+    <script>
+        function showdiv(div_id){
+
+            $('#'+div_id).css('display', 'block');
+            if (div_id == 'div1'){
+                $('#div2').css('display', 'none');
+                $('#div3').css('display', 'none');
+            }
+            else if(div_id == 'div2'){
+                $('#div1').css('display', 'none');
+                $('#div3').css('display', 'none');
+            }
+            else{
+                $('#div2').css('display', 'none');
+                $('#div1').css('display', 'none');
+            }
+        }
+        function trigger_warning(val){
+
+            if(val >= 4)
+                $("#warning").css('display','inline-block');
+            else
+                $("#warning").css('display','none');
+        }
+        $("#custom_button").click(function(){
+            var url = "{%url 'new_game'%}?mode=2&&";
+            var color = $("input[name=color]:checked").val();
+            var difficulty = $("input[name=difficulty]:checked").val();
+            //console.log(url + "color=" + color + "&&difficulty=" + difficulty);
+            window.location = url + "color=" + color + "&&depth=" + difficulty
+        });
+        $("#ai_button").click(function(){
+            var url = "{%url 'new_game'%}?mode=4&&";
+            var depth = $("input[name=depth]").val();
+            //console.log(url + "depth=" + depth);
+            window.location = url + "depth=" + depth;
+        });
+    </script>
+</html>
