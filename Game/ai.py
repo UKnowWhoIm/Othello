@@ -6,7 +6,7 @@ else:
     from .constants import WHITE, BLACK
 
 from copy import deepcopy
-from time import time
+
 
 
 def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
