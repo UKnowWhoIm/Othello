@@ -1,1 +1,1 @@
-web: gunicorn myproject.wsgi
+website/manage.py runserver 0.0.0.0:$PORT
