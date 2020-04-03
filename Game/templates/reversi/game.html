@@ -84,8 +84,10 @@
                 {%for col in row%}
                     {%if col == None%}
                         <td class="Blank" id="{{forloop.parentloop.counter0}},{{forloop.counter0}}"><img src="{%static 'blank.png'%}" alt="Blank"/></td>
+                    {%elif col == 'white'%}
+                        <td class="white" id="{{forloop.parentloop.counter0}},{{forloop.counter0}}"><img src="{%static 'white.png'%}" alt="white"/></td>
                     {%else%}
-                        <td class="{{col}}" id="{{forloop.parentloop.counter0}},{{forloop.counter0}}"><img src="{%static ''%}{{col}}.png" alt="{{col}}"/></td>
+                        <td class="black" id="{{forloop.parentloop.counter0}},{{forloop.counter0}}"><img src="{%static 'black.png'%}" alt="black"/></td>
                     {%endif%}
                 {%endfor%}
                 </tr>
