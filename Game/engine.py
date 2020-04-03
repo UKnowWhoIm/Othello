@@ -83,8 +83,10 @@ class Board:
     def has_game_ended(self):
         return self.check_pass(WHITE) and self.check_pass(BLACK)
 
-    def ai_calc_score(self):
-        return self.black_score - self.white_score
+    def ai_calc_score(self, ai_player):
+        if ai_player == BLACK:
+            return self.black_score - self.white_score
+        return self.white_score - self.black_score
 
     def print_board(self):
         for i in range(8):

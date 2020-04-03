@@ -8,12 +8,10 @@ else:
 from copy import deepcopy
 
 
-
 def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
     if depth == 0:
-        if root_player == WHITE:
-            return board.ai_calc_score() * -1
-        return board.ai_calc_score()
+        return board.ai_calc_score(root_player)
+
     break_loop = False
     if is_max:
         max_val = -1000
@@ -26,7 +24,7 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
                         max_val = val
                     alpha = max(max_val, alpha)
                     if beta <= alpha:
-                        print('prune')
+                        # print('prune')
                         break_loop = True
                         break
             if break_loop:
@@ -44,7 +42,7 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
                         min_val = val
                     beta = min(beta, min_val)
                     if beta <= alpha:
-                        print('prune')
+                        # print('prune')
                         break_loop = True
                         break
             if break_loop:
@@ -55,16 +53,24 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
 def interface(board, player, depth=4):
     max_val = -10000
     coods = (-1, -1)
-
+    initial_moves = []
     for i in range(8):
         for j in range(8):
             temp = deepcopy(board)
             if temp.is_valid(i, j, player):
-                val = minimax(temp, player, engine.reverse_player(player), depth - 1, False)
-                # print(val)
-                if val > max_val:
-                    max_val = val
-                    coods = (i, j)
+                initial_moves.append((temp, [i, j]))
+
+    initial_moves = sorted(initial_moves, key=lambda x:x[0].ai_calc_score(player))
+
+    for move in initial_moves:
+        temp = move[0]
+        [i, j] = move[1]
+        val = minimax(temp, player, engine.reverse_player(player), depth - 1, False)
+        # print(val)
+        if val > max_val:
+            max_val = val
+            coods = (i, j)
+
     return coods
 
 

@@ -57,6 +57,11 @@
             body{
                 overflow-x: hidden;
             }
+            .Blank{
+                background-color: #2ECA10;
+                height: 40px;
+                width: 40px;
+            }
         </style>
     </head>
     <body>
@@ -83,7 +88,7 @@
                 <tr>
                 {%for col in row%}
                     {%if col == None%}
-                        <td class="Blank" id="{{forloop.parentloop.counter0}},{{forloop.counter0}}"><img src="{%static 'blank.png'%}" alt="Blank"/></td>
+                        <td class="Blank" id="{{forloop.parentloop.counter0}},{{forloop.counter0}}"><!--<img src="{%static 'blank.png'%}" alt="Blank"/>--></td>
                     {%elif col == 'white'%}
                         <td class="white" id="{{forloop.parentloop.counter0}},{{forloop.counter0}}"><img src="{%static 'white.png'%}" alt="white"/></td>
                     {%else%}
