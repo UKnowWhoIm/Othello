@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import django_heroku
 import os
+from django.utils.log import DEFAULT_LOGGING
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +25,23 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'vnh&-g!*14r5k$tk@kaw@8x7pp$2!$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['django-othello.herokuapp.com']
+
+ADMINS = [('Sidharth', 'sidharthajithkumar@gmail.com')]
+
+"""
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_HOST_USER = 'uknowwhoim4@gmail.com'
+
+EMAIL_HOST_PASSWORD = os.environ.get('DJANGO_EMAIL_PASSWORD', '')
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+DEFAULT_FROM_EMAIL = 'uknowwhoim4@gmail.com'
+"""
 
 # Application definition
 
