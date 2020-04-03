@@ -122,6 +122,8 @@
                             $.post("{%url 'Move'%}",{"targetX":'-1',"targetY":'-1'},function(result){
                                 if (result == FALIURE_CODE)
                                     alert("Invalid Move");
+                                else
+                                    location.reload();
                             })
                         });
                 {%else%}

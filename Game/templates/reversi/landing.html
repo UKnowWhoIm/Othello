@@ -118,9 +118,9 @@
                 
                 <div id='difficulty'>
                     <h4>Choose Difficulty</h4>
-                    <input type="radio" value="2" name="difficulty"/>Easy
-                    <input type="radio" value="3" name="difficulty"/>Medium
-                    <input type="radio" value="4" name="difficulty"/>Hard<br/>
+                    <input type="radio" value="3" name="difficulty"/>Easy
+                    <input type="radio" value="4" name="difficulty"/>Medium
+                    <input type="radio" value="5" name="difficulty"/>Hard<br/>
                 </div><br/>
                 <button type="button" id="custom_button">Play</button>
             </div>
@@ -128,7 +128,7 @@
         <div id="div3">
             <h1>AI vs AI</h1>
             <h4>Choose Depth Of Minimax</h4>
-            <label id="warning">WARNING: Using depth higher than or equal to 4 may lead to long wait times between moves</label><br/>
+            <label id="warning">WARNING: Using depth higher than 5 may lead to long wait times between moves</label><br/>
 
             <input type="number" placeholder="Enter Depth" onkeyup="trigger_warning(this.value)" name="depth"/>
             <button type="button" id="ai_button">Play</button>
@@ -159,7 +159,7 @@
         }
         function trigger_warning(val){
 
-            if(val >= 4)
+            if(val > 5)
                 $("#warning").css('display','inline-block');
             else
                 $("#warning").css('display','none');

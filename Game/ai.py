@@ -4,7 +4,7 @@ if __name__ == "__main__":
 else:
     from . import engine
     from .constants import WHITE, BLACK
-
+    from time import time
 from copy import deepcopy
 
 
@@ -17,14 +17,16 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
         max_val = -1000
         for i in range(8):
             for j in range(8):
-                temp = deepcopy(board)
-                if temp.is_valid(i, j, player):
+                [move_is_valid, flipped_pieces] = board.is_valid(i, j, player, True)
+                if move_is_valid:
+                    temp = deepcopy(board)
+                    temp.flip_pieces(flipped_pieces, player)
                     val = minimax(temp, root_player, engine.reverse_player(player), depth - 1, False)
                     if val > max_val:
                         max_val = val
                     alpha = max(max_val, alpha)
                     if beta <= alpha:
-                        # print('prune')
+                        print('prune')
                         break_loop = True
                         break
             if break_loop:
@@ -35,14 +37,16 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
         min_val = 1000
         for i in range(8):
             for j in range(8):
-                temp = deepcopy(board)
-                if temp.is_valid(i, j, player):
+                [move_is_valid, flipped_pieces] = board.is_valid(i, j, player, True)
+                if move_is_valid:
+                    temp = deepcopy(board)
+                    temp.flip_pieces(flipped_pieces, player)
                     val = minimax(temp, root_player, engine.reverse_player(player), depth - 1, True)
                     if val < min_val:
                         min_val = val
                     beta = min(beta, min_val)
                     if beta <= alpha:
-                        # print('prune')
+                        print('prune')
                         break_loop = True
                         break
             if break_loop:
@@ -50,14 +54,17 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
         return beta
 
 
-def interface(board, player, depth=4):
+def interface(board, player, depth=3):
+    a = time()
     max_val = -10000
     coods = (-1, -1)
     initial_moves = []
     for i in range(8):
         for j in range(8):
-            temp = deepcopy(board)
-            if temp.is_valid(i, j, player):
+            [move_is_valid, flipped_pieces] = board.is_valid(i, j, player, True)
+            if move_is_valid:
+                temp = deepcopy(board)
+                temp.flip_pieces(flipped_pieces, player)
                 initial_moves.append((temp, [i, j]))
 
     initial_moves = sorted(initial_moves, key=lambda x:x[0].ai_calc_score(player))
@@ -70,7 +77,7 @@ def interface(board, player, depth=4):
         if val > max_val:
             max_val = val
             coods = (i, j)
-
+    print(time() - a)
     return coods
 
 
