@@ -10,7 +10,7 @@ from copy import deepcopy
 
 def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
     if depth == 0:
-        return board.ai_calc_score(root_player, player)
+        return board.ai_calc_score(is_max, player)
 
     break_loop = False
     if is_max:
@@ -26,7 +26,7 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
                         max_val = val
                     alpha = max(max_val, alpha)
                     if beta <= alpha:
-                        print('prune')
+                        # print('prune')
                         break_loop = True
                         break
             if break_loop:
@@ -46,7 +46,7 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
                         min_val = val
                     beta = min(beta, min_val)
                     if beta <= alpha:
-                        print('prune')
+                        # print('prune')
                         break_loop = True
                         break
             if break_loop:
@@ -56,7 +56,6 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
 
 def interface(board, player, depth=3):
     a = time()
-    max_val = -10000
     coods = (-1, -1)
     initial_moves = []
     for i in range(8):
@@ -67,16 +66,17 @@ def interface(board, player, depth=3):
                 temp.flip_pieces(flipped_pieces, player)
                 initial_moves.append((temp, [i, j]))
 
-    initial_moves = sorted(initial_moves, key=lambda x:x[0].ai_calc_score(player, player))
+    initial_moves = sorted(initial_moves, key=lambda x:x[0].ai_calc_score(True, player), reverse=True)
 
+    alpha = -10000
     for move in initial_moves:
         temp = move[0]
         [i, j] = move[1]
-        val = minimax(temp, player, engine.reverse_player(player), depth - 1, False)
-        # print(val)
-        if val > max_val:
-            max_val = val
+        val = minimax(temp, player, engine.reverse_player(player), depth - 1, False, alpha)
+        if val > alpha:
+            alpha = val
             coods = (i, j)
+
     print(time() - a)
     return coods
 

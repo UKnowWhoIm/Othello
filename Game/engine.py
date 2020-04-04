@@ -106,12 +106,8 @@ class Board:
     def has_game_ended(self):
         return self.check_pass(WHITE) and self.check_pass(BLACK)
 
-    def ai_calc_score(self, ai_player, current_player):
+    def ai_calc_score(self, is_max, current_player):
         # Heuristic function
-        if ai_player != current_player:
-            multiplier = -1
-        else:
-            multiplier = 1
         score = 0
         white_position_score = 0
         black_position_score = 0
@@ -124,12 +120,12 @@ class Board:
         black_position_score += self.black_corners * corner_factor
         black_position_score += self.black_edges * edge_factor
 
-        if multiplier == 1 and current_player == WHITE or multiplier == -1 and current_player == BLACK:
+        if is_max and current_player == WHITE or not is_max and current_player == BLACK:
             # WHITE is maximising
             basic_score = self.white_score - self.black_score
             score += white_position_score
             score -= black_position_score
-        else:
+        elif is_max and current_player == BLACK or not is_max and current_player == WHITE:
             # BLACK is maximising
             basic_score = self.black_score - self.white_score
             score -= white_position_score
