@@ -64,7 +64,7 @@ def new_game(request):
         request.session['ai_color'] = BLACK
     elif int(request.GET['mode']) == 2:
         # Custom Match
-        if 2 < int(request.GET['depth']) <= 5:
+        if 1 <= int(request.GET['depth']) <= 7:
             request.session['depth'] = int(request.GET['depth'])
         else:
             request.session['depth'] = 4
@@ -74,10 +74,10 @@ def new_game(request):
         request.session['ai_disabled'] = True
     else:
         # AI v AI
-        if 1 < int(request.GET['depth']) <=  7:
+        if 1 <= int(request.GET['depth']) <= 7:
             request.session['depth'] = int(request.GET['depth'])
         else:
-            request.session['depth'] = 3
+            request.session['depth'] = 4
         request.session['player_disabled'] = True
     return HttpResponseRedirect('/reversi')
 
