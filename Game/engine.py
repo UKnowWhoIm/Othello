@@ -86,10 +86,38 @@ class Board:
     def has_game_ended(self):
         return self.check_pass(WHITE) and self.check_pass(BLACK)
 
-    def ai_calc_score(self, ai_player):
-        if ai_player == BLACK:
-            return self.black_score - self.white_score
-        return self.white_score - self.black_score
+    def ai_calc_score(self, ai_player, current_player):
+        if ai_player != current_player:
+            multiplier = -1
+        else:
+            multiplier = 1
+        score = 0
+        if multiplier == 1 and current_player == WHITE or multiplier == -1 and current_player == BLACK:
+            # WHITE is maximising
+            basic_score = self.white_score - self.black_score
+        else:
+            # BLACK is maximising
+            basic_score = self.black_score - self.white_score
+
+        score += basic_score
+        edge_factor = 4
+        corner_factor = 8
+
+        for i in range(8):
+            for j in range(8):
+                if self.board.get((i, j), None):
+                    if is_edge(i, j):
+                        if is_corner(i, j):
+                            if self.board[(i, j)] == current_player:
+                                score += corner_factor * 1 * multiplier
+                            else:
+                                score += corner_factor * -1 * multiplier
+                        else:
+                            if self.board[(i, j)] == current_player:
+                                score += edge_factor * 1 * multiplier
+                            else:
+                                score += edge_factor * -1 * multiplier
+        return score
 
     def print_board(self):
         for i in range(8):
@@ -112,6 +140,11 @@ def reverse_player(player):
         return WHITE
     return BLACK
 
+def is_edge(x, y):
+    return x == 0 or x == 7 or y == 0 or y == 7
+
+def is_corner(x, y):
+    return (x == 0 or x == 7) and (y == 0 or y == 7)
 
 if __name__ == '__main__':
     pass

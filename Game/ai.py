@@ -10,7 +10,7 @@ from copy import deepcopy
 
 def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
     if depth == 0:
-        return board.ai_calc_score(root_player)
+        return board.ai_calc_score(root_player, player)
 
     break_loop = False
     if is_max:
@@ -67,7 +67,7 @@ def interface(board, player, depth=3):
                 temp.flip_pieces(flipped_pieces, player)
                 initial_moves.append((temp, [i, j]))
 
-    initial_moves = sorted(initial_moves, key=lambda x:x[0].ai_calc_score(player))
+    initial_moves = sorted(initial_moves, key=lambda x:x[0].ai_calc_score(player, player))
 
     for move in initial_moves:
         temp = move[0]
