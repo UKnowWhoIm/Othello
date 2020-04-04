@@ -14,6 +14,10 @@ class Board:
             self.board = {(3, 3): WHITE, (3, 4): BLACK, (4, 4): WHITE, (4, 3): BLACK}
             self.white_score = 2
             self.black_score = 2
+        self.white_corners = 0
+        self.white_edges = 0
+        self.black_edges = 0
+        self.black_corners = 0
 
     def is_valid(self, x, y, player, sim=False):
 
@@ -60,13 +64,29 @@ class Board:
         return move_is_valid
 
     def calc_score(self):
+        # Calculate white score and black score separately
+        # Also calculate number of corners and edges of white and black for saving time in heuristic function
         self.white_score = 0
         self.black_score = 0
+        self.black_edges = 0
+        self.black_corners = 0
+        self.white_edges = 0
+        self.white_corners = 0
         for pos, player in self.board.items():
             if player == WHITE:
                 self.white_score += 1
+                if is_edge(pos):
+                    if is_corner(pos):
+                        self.white_corners += 1
+                    else:
+                        self.white_edges += 1
             elif player == BLACK:
                 self.black_score += 1
+                if is_edge(pos):
+                    if is_corner(pos):
+                        self.black_corners += 1
+                    else:
+                        self.black_edges += 1
 
     def available_moves(self, player):
         moves = []
@@ -87,36 +107,36 @@ class Board:
         return self.check_pass(WHITE) and self.check_pass(BLACK)
 
     def ai_calc_score(self, ai_player, current_player):
+        # Heuristic function
         if ai_player != current_player:
             multiplier = -1
         else:
             multiplier = 1
         score = 0
-        if multiplier == 1 and current_player == WHITE or multiplier == -1 and current_player == BLACK:
-            # WHITE is maximising
-            basic_score = self.white_score - self.black_score
-        else:
-            # BLACK is maximising
-            basic_score = self.black_score - self.white_score
+        white_position_score = 0
+        black_position_score = 0
 
-        score += basic_score
         edge_factor = 4
         corner_factor = 8
 
-        for i in range(8):
-            for j in range(8):
-                if self.board.get((i, j), None):
-                    if is_edge(i, j):
-                        if is_corner(i, j):
-                            if self.board[(i, j)] == current_player:
-                                score += corner_factor * 1 * multiplier
-                            else:
-                                score += corner_factor * -1 * multiplier
-                        else:
-                            if self.board[(i, j)] == current_player:
-                                score += edge_factor * 1 * multiplier
-                            else:
-                                score += edge_factor * -1 * multiplier
+        white_position_score += self.white_corners * corner_factor
+        white_position_score += self.white_edges * edge_factor
+        black_position_score += self.black_corners * corner_factor
+        black_position_score += self.black_edges * edge_factor
+
+        if multiplier == 1 and current_player == WHITE or multiplier == -1 and current_player == BLACK:
+            # WHITE is maximising
+            basic_score = self.white_score - self.black_score
+            score += white_position_score
+            score -= black_position_score
+        else:
+            # BLACK is maximising
+            basic_score = self.black_score - self.white_score
+            score -= white_position_score
+            score += black_position_score
+
+        score += basic_score
+
         return score
 
     def print_board(self):
@@ -134,17 +154,24 @@ class Board:
     def flip_pieces(self, flipped_pieces, player):
         for piece in flipped_pieces:
             self.board[piece] = player
+        self.calc_score()
+
 
 def reverse_player(player):
     if player == BLACK:
         return WHITE
     return BLACK
 
-def is_edge(x, y):
+
+def is_edge(pos):
+    (x, y) = pos
     return x == 0 or x == 7 or y == 0 or y == 7
 
-def is_corner(x, y):
+
+def is_corner(pos):
+    (x, y) = pos
     return (x == 0 or x == 7) and (y == 0 or y == 7)
+
 
 if __name__ == '__main__':
     pass
