@@ -54,7 +54,8 @@ def minimax(board, root_player, player, depth, is_max, alpha=-1000, beta=1000):
         return beta
 
 
-def interface(board, player, depth=3):
+def interface(board, player, depth=4):
+    print(depth)
     a = time()
     coods = (-1, -1)
     initial_moves = []
@@ -67,6 +68,10 @@ def interface(board, player, depth=3):
                 initial_moves.append((temp, [i, j]))
 
     initial_moves = sorted(initial_moves, key=lambda x:x[0].ai_calc_score(True, player), reverse=True)
+
+    if depth == 1 and initial_moves:
+        # Greedy AI
+        return initial_moves[0][1]
 
     alpha = -10000
     for move in initial_moves:

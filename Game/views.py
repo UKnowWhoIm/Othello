@@ -3,6 +3,20 @@ from django.http import HttpResponse, HttpResponseRedirect
 from . import engine
 from .constants import *
 from . import ai
+import random
+
+
+def check_game_over(request):
+    if request.session['board'].has_game_ended():
+        request.session['game_over'] = True
+        if request.session['board'].white_score > request.session['board'].black_score:
+            request.session['player'] = WHITE
+        elif request.session['board'].white_score < request.session['board'].black_score:
+            request.session['player'] = BLACK
+        else:
+            request.session['player'] = None
+        return True
+    return False
 
 
 def process_move(request):
@@ -10,37 +24,31 @@ def process_move(request):
     y = int(request.POST['targetY'])
     if request.session['board'].is_valid(x, y, request.session['player']):
         if [x, y] == [-1, -1]:
-            if request.session['board'].has_game_ended():
-                request.session['game_over'] = True
-                if request.session['board'].white_score > request.session['board'].black_score:
-                    request.session['player'] = WHITE
-                elif request.session['board'].white_score < request.session['board'].black_score:
-                    request.session['player'] = BLACK
-                else:
-                    request.session['player'] = None
+            if check_game_over(request):
                 return HttpResponse(SUCCESS_CODE)
         request.session['player'] = engine.reverse_player(request.session['player'])
         return HttpResponse(SUCCESS_CODE)
     return HttpResponse(FAILURE_CODE)
 
 
-def ai_move(request):
-    move = ai.interface(request.session['board'], request.session['player'], request.session['depth'])
-    """
-    if move not in request.session['board'].available_moves(request.session['player']):
-        print("ALERT:: Error", move, request.session['player'])
-        raise TypeError
-        """
+def minimax_move(request, depth):
+    move = ai.interface(request.session['board'], request.session['player'], depth)
+
     request.session['board'].is_valid(move[0], move[1], request.session['player'])
     if move == (-1, -1):
-        if request.session['board'].has_game_ended():
-            request.session['game_over'] = True
-            if request.session['board'].white_score > request.session['board'].black_score:
-                request.session['player'] = WHITE
-            elif request.session['board'].white_score < request.session['board'].black_score:
-                request.session['player'] = BLACK
-            else:
-                request.session['player'] = None
+        if check_game_over(request):
+            return HttpResponse(SUCCESS_CODE)
+    request.session['player'] = engine.reverse_player(request.session['player'])
+    return HttpResponse(SUCCESS_CODE)
+
+
+def random_move(request):
+    moves = request.session['board'].available_moves(request.session['player'])
+    if moves:
+        move = random.choice(moves)
+        request.session['board'].is_valid(move[0], move[1], request.session['player'])
+    else:
+        if check_game_over(request):
             return HttpResponse(SUCCESS_CODE)
     request.session['player'] = engine.reverse_player(request.session['player'])
     return HttpResponse(SUCCESS_CODE)
@@ -60,27 +68,59 @@ def new_game(request):
     request.session['player_disabled'] = False
     if int(request.GET['mode']) == 1:
         # Quick Match
-        request.session['depth'] = 4
         request.session['ai_color'] = BLACK
+        request.session['black_type'] = 1
+        request.session['black_depth'] = 4
+
     elif int(request.GET['mode']) == 2:
         # Custom Match
-        if 1 <= int(request.GET['depth']) <= 7:
-            request.session['depth'] = int(request.GET['depth'])
-        else:
-            request.session['depth'] = 4
-        request.session['ai_color'] = engine.reverse_player(request.GET['color'])
+        request.session['black_type'] = int(request.GET['type'])
+        if request.session['black_type'] == 1:
+            if 1 <= int(request.GET['depth']) <= 7:
+                request.session['black_depth'] = int(request.GET['depth'])
+            else:
+                request.session['black_depth'] = 4
+
     elif int(request.GET['mode']) == 3:
         # Multi player
         request.session['ai_disabled'] = True
+
     else:
         # AI v AI
-        if 1 <= int(request.GET['depth']) <= 7:
-            request.session['depth'] = int(request.GET['depth'])
-        else:
-            request.session['depth'] = 4
+        request.session['white_type'] = int(request.GET['white_type'])
+        request.session['black_type'] = int(request.GET['black_type'])
+        if request.session['white_type'] == 1:
+            # Minimax with alpha beta pruning
+            request.session['white_depth'] = int(request.GET['white_depth'])
+        if request.session['black_type'] == 1:
+            # Minimax with alpha beta pruning
+            request.session['black_depth'] = int(request.GET['black_depth'])
+
         request.session['player_disabled'] = True
+
     return HttpResponseRedirect('/reversi')
 
 
 def landing(request):
     return render(request, "reversi/landing.html")
+
+
+def ai_move_handler(request):
+    if request.session['player'] == WHITE:
+        if request.session.get('white_type', None) is None:
+            return HttpResponse(FAILURE_CODE)
+        type = 'white_type'
+        depth = 'white_depth'
+    else:
+        type = 'black_type'
+        depth = 'black_depth'
+    if request.session[type] == 1:
+        # Minimax with alpha beta pruning
+        minimax_move(request, request.session[depth])
+    elif request.session[type] == 2:
+        # Random Move
+        random_move(request)
+    else:
+        # Greedy Move
+        minimax_move(request, 1)
+    return HttpResponse(SUCCESS_CODE)

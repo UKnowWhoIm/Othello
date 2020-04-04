@@ -10,26 +10,31 @@
         <style>
          #white{
             position: absolute;
-            left: 10%;  
+            left: 5%;  
          }
          #black{
             position: absolute;
-            right: 10%
+            right: 5%
          }
          table{
                border: 2px solid black;
             }   
          td{
+                text-align: center;
                 border: 2px solid black;
-                padding:  20px 20px 20px 20px;
+                padding:  18px 18px;
                 background-color: #2eca10;
                 cursor: pointer;
-               
               }              
+        td img{
+            
+            height: 33px;
+            width: 33px;
+        }
           h1{
                 text-transform: capitalize;
                 text-align: center;
-                padding: 10px 10px 10px 10px;
+                padding: 10px 10px;
                 
             }
             button{
@@ -37,6 +42,7 @@
                 cursor: pointer;
             }
             .pass{
+                margin-top: 5px;
                 padding: 8px 8px;
                 background-color: burlywood
             }
@@ -59,8 +65,8 @@
             }
             .Blank{
                 background-color: #2ECA10;
-                height: 40px;
-                width: 40px;
+                height: 37px;
+                width: 33px;
             }
         </style>
     </head>
@@ -68,13 +74,29 @@
         {%load board_extras%}
         <div id="white">
             <h2>White</h2>    
+            {%if not request.session.player_disabled%}
+                <h4>Player</h4>
+            {%elif request.session.white_type == 1%}
+                <h4>Minimax(Depth: {{request.session.white_depth}})</h4>
+            {%elif request.session.white_type == 2%}
+                <h4>Random</h4>
+            {%elif request.session.white_type == 3%}
+                <h4>Greedy</h4>
+            {%endif%}
             {{request.session.board.white_score}}<br/>
             {%if request.session.ai_disabled and request.session.player == 'white' or request.session.player == 'white' and request.session.ai_color == 'black'%}
                 <button class="pass" id="1">Pass</button>
             {%endif%}
         </div>
         <div id="black">
-            <h2>Black</h2>    
+            <h2>Black</h2>   
+            {%if request.session.black_type == 1%}
+                <h4>Minimax(Depth: {{request.session.black_depth}})</h4>
+            {%elif request.session.black_type == 2%}
+                <h4>Random</h4>
+            {%elif request.session.black_type == 3%}
+                <h4>Greedy</h4>
+            {%endif%} 
             {{request.session.board.black_score}}<br/>
             {%if request.session.ai_disabled and request.session.player == 'black' or request.session.player == 'black' and request.session.ai_color == 'white'%}
                 <button id="2" class="pass">Pass</button>
@@ -105,7 +127,7 @@
             FALIURE_CODE = 300;
             SUCCESS_CODE = 200;
             {%if not request.session.game_over%}
-                {%if request.session.player != request.session.ai_color and not request.session.player_disabled%}
+                {%if request.session.player != "black" and not request.session.player_disabled%}
                     $(".Blank").click(function () {
                         var coods = $(this).attr('id').split(',');
                         $.post("{%url 'Move'%}", { "targetX": coods[0], "targetY": coods[1] }, function (result) {
@@ -134,6 +156,7 @@
                     });
                 {%endif%}
             {%endif%}
+            
         </script>
         <footer>
             <div id="footer-content">
