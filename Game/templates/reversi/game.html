@@ -123,7 +123,7 @@
             FALIURE_CODE = 300;
             SUCCESS_CODE = 200;
             {%if not request.session.game_over%}
-                {%if request.session.player != "black" and not request.session.player_disabled%}
+                {%if request.session.player == "white" and not request.session.player_disabled or request.session.ai_disabled%}
                     $(".Blank").click(function () {
                         var coods = $(this).attr('id').split(',');
                         $.post("{%url 'Move'%}", { "targetX": coods[0], "targetY": coods[1] }, function (result) {
