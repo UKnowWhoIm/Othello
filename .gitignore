@@ -3,4 +3,4 @@ db.sqlite3
 *.pyc
 staticfiles/*
 ReversiAI/__pycache__/*
-Game/pycache/*
+Game/__pycache__/*
