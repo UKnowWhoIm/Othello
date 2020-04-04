@@ -8,13 +8,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{%static 'style.css'%}"/>
         <style>
-         #white{
-            position: absolute;
-            left: 1%;  
-         }
-         #black{
-            position: absolute;
-            right: 1%
+         #scorecard{
+             position: absolute;
+             left: 3%;
          }
          table{
                border: 2px solid black;
@@ -72,7 +68,7 @@
     </head>
     <body>
         {%load board_extras%}
-        <div id="white">
+        <div id="scorecard">
             <h2>White</h2>    
             {%if not request.session.player_disabled%}
                 <h4>Player</h4>
@@ -87,8 +83,7 @@
             {%if not request.session.player_disabled and request.session.player == 'white'%}
                 <button class="pass" id="1">Pass</button>
             {%endif%}
-        </div>
-        <div id="black">
+        
             <h2>Black</h2>   
             {%if request.session.black_type == 1%}
                 <h4>Minimax(Depth: {{request.session.black_depth}})</h4>
