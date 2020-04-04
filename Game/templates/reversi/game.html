@@ -10,11 +10,11 @@
         <style>
          #white{
             position: absolute;
-            left: 5%;  
+            left: 1%;  
          }
          #black{
             position: absolute;
-            right: 5%
+            right: 1%
          }
          table{
                border: 2px solid black;
@@ -84,7 +84,7 @@
                 <h4>Greedy</h4>
             {%endif%}
             {{request.session.board.white_score}}<br/>
-            {%if request.session.ai_disabled and request.session.player == 'white' or request.session.player == 'white' and request.session.ai_color == 'black'%}
+            {%if not request.session.player_disabled and request.session.player == 'white'%}
                 <button class="pass" id="1">Pass</button>
             {%endif%}
         </div>
@@ -98,7 +98,7 @@
                 <h4>Greedy</h4>
             {%endif%} 
             {{request.session.board.black_score}}<br/>
-            {%if request.session.ai_disabled and request.session.player == 'black' or request.session.player == 'black' and request.session.ai_color == 'white'%}
+            {%if request.session.ai_disabled and request.session.player == 'black'%}
                 <button id="2" class="pass">Pass</button>
             {%endif%}
         </div>
@@ -156,7 +156,6 @@
                     });
                 {%endif%}
             {%endif%}
-            
         </script>
         <footer>
             <div id="footer-content">
